@@ -22,6 +22,8 @@ const themeToggleBtn = document.getElementById('themeToggleBtn');
 const currencySelector = document.getElementById('currencySelector');
 const greetingText = document.getElementById('greetingText');
 const currentDateText = document.getElementById('currentDateText');
+// Logo
+const logo = document.getElementById('logo');
 
 // Mobile navigation selectors
 const menuToggleBtn = document.getElementById('menuToggleBtn');
@@ -76,13 +78,13 @@ function updateHeaderDate() {
   
   // Dynamic Greeting based on time
   const hour = today.getHours();
-  let greeting = 'Olá, Ladis';
+  let greeting = 'Olá, Ladislau Nunes';
   if (hour >= 5 && hour < 12) {
-    greeting = 'Bom dia, Ladis';
+    greeting = 'Bom dia, Ladislau Nunes';
   } else if (hour >= 12 && hour < 18) {
-    greeting = 'Boa tarde, Ladis';
+    greeting = 'Boa tarde, Ladislau Nunes';
   } else {
-    greeting = 'Boa noite, Ladis';
+    greeting = 'Boa noite, Ladislau Nunes';
   }
   if (greetingText) {
     greetingText.textContent = greeting;
@@ -111,6 +113,17 @@ function applySettings() {
   }
 }
 
+// Actualiza a logo baseada no tema actual
+function updateLogo(theme) {
+  logo.src =
+    theme === 'dark'
+      ? '/logo-branco.png'
+      : '/logo.png';
+}
+
+// Define o logo ao carregar a página
+updateLogo(store.getSettings().theme);
+
 function initSettingsListeners() {
   // Theme Toggle Button click
   if (themeToggleBtn) {
@@ -118,6 +131,7 @@ function initSettingsListeners() {
       const currentTheme = store.getSettings().theme;
       const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
       store.updateSetting('theme', nextTheme);
+      updateLogo(nextTheme);
     });
   }
 
@@ -534,7 +548,7 @@ function openContributionModalForm(goal, type = 'deposit') {
     titleEl.textContent = 'Reforçar Meta';
     submitBtn.textContent = 'Reforçar Poupança';
     submitBtn.className = 'btn btn-primary';
-    helperEl.textContent = 'Este valor será debitado do seu saldo geral atual e adicionado à meta.';
+    helperEl.textContent = 'Este valor será debitado do seu saldo geral actual e adicionado à meta.';
     amountInput.max = ''; // No max, client can save as much as they want (will show negative balance if overdrafted, which is normal)
   } else {
     titleEl.textContent = 'Levantar Fundos';

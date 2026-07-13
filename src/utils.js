@@ -6,7 +6,7 @@
 export const CATEGORIES = {
   // Expenses
   alimentacao: { name: 'Alimentação', icon: 'utensils', color: '#10b981', bg: '#10b98120', type: 'expense' },
-  lazer: { name: 'Lazer & Cultura', icon: 'party-popper', color: '#ec4899', bg: '#ec489920', type: 'expense' },
+  lazer: { name: 'Lazer & Diversão', icon: 'party-popper', color: '#ec4899', bg: '#ec489920', type: 'expense' },
   transportes: { name: 'Transportes', icon: 'car', color: '#f59e0b', bg: '#f59e0b20', type: 'expense' },
   habitacao: { name: 'Habitação & Contas', icon: 'home', color: '#3b82f6', bg: '#3b82f620', type: 'expense' },
   saude: { name: 'Saúde', icon: 'heart-pulse', color: '#f43f5e', bg: '#f43f5e20', type: 'expense' },
