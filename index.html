@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kumbu++ | Gestão de Finanças Pessoais</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body class="dark-theme">
+  <!-- App Container -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="/logo.png" alt="Kumbu++ Logo" class="sidebar-logo-img">
+        </div>
+        <button class="close-sidebar-btn" id="closeSidebarBtn">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="transactions">
+          <i data-lucide="arrow-left-right"></i>
+          <span>Transações</span>
+        </button>
+        <button class="nav-item" data-view="budgets">
+          <i data-lucide="pie-chart"></i>
+          <span>Orçamentos</span>
+        </button>
+        <button class="nav-item" data-view="goals">
+          <i data-lucide="target"></i>
+          <span>Metas</span>
+        </button>
+        <button class="nav-item" data-view="reports">
+          <i data-lucide="trending-up"></i>
+          <span>Relatórios</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="avatar">L</div>
+          <div class="user-info">
+            <span class="user-name">Ladis</span>
+            <span class="user-role">Premium User</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <main class="app-main">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menuToggleBtn">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="header-greeting">
+            <h1 id="greetingText">Olá, Ladis</h1>
+            <p class="header-subtitle" id="currentDateText">A carregar...</p>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <!-- Theme Toggle -->
+          <button class="theme-toggle-btn" id="themeToggleBtn" title="Alternar Tema">
+            <i data-lucide="sun" class="theme-icon-light"></i>
+            <i data-lucide="moon" class="theme-icon-dark"></i>
+          </button>
+
+          <!-- Quick Action Button -->
+          <button class="btn btn-primary btn-quick-action" id="quickAddBtn">
+            <i data-lucide="plus"></i>
+            <span>Nova Transação</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic View Area -->
+      <div class="view-container" id="viewContainer">
+        <!-- Views will render dynamically here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  
+  <!-- Add/Edit Transaction Modal -->
+  <div class="modal-overlay" id="transactionModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="transactionModalTitle">Nova Transação</h2>
+        <button class="modal-close-btn" data-close="transactionModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="transactionForm" class="modal-form">
+        <input type="hidden" id="txId">
+        
+        <!-- Transaction Type Switcher -->
+        <div class="form-group">
+          <label class="form-label">Tipo de Transação</label>
+          <div class="tx-type-toggle">
+            <label class="type-option expense active">
+              <input type="radio" name="txType" value="expense" checked>
+              <i data-lucide="arrow-down-right"></i>
+              <span>Despesa</span>
+            </label>
+            <label class="type-option income">
+              <input type="radio" name="txType" value="income">
+              <i data-lucide="arrow-up-right"></i>
+              <span>Receita</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <!-- Description -->
+          <div class="form-group">
+            <label for="txDescription" class="form-label">Descrição</label>
+            <input type="text" id="txDescription" class="form-input" placeholder="Ex: Supermercado, Salário" required>
+          </div>
+          
+          <!-- Amount -->
+          <div class="form-group">
+            <label for="txAmount" class="form-label">Valor</label>
+            <div class="input-currency-wrapper">
+              <span class="currency-symbol-input" id="modalCurrencySymbol">Kz</span>
+              <input type="number" id="txAmount" class="form-input" min="0.01" step="0.01" placeholder="0.00" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <!-- Category -->
+          <div class="form-group">
+            <label for="txCategory" class="form-label">Categoria</label>
+            <select id="txCategory" class="form-input" required>
+              <!-- Categories loaded dynamically depending on type -->
+            </select>
+          </div>
+          
+          <!-- Date -->
+          <div class="form-group">
+            <label for="txDate" class="form-label">Data</label>
+            <input type="date" id="txDate" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <!-- Payment Method -->
+          <div class="form-group">
+            <label for="txPaymentMethod" class="form-label">Método de Pagamento</label>
+            <select id="txPaymentMethod" class="form-input">
+              <option value="Cash">Dinheiro</option>
+              <option value="Card">Cartão Multicaixa / Crédito</option>
+              <option value="Transfer">Transferência</option>
+              <option value="Mobile">Mobile Money (MCash/Unitel Money)</option>
+            </select>
+          </div>
+          
+          <!-- Notes -->
+          <div class="form-group">
+            <label for="txNotes" class="form-label">Notas (Opcional)</label>
+            <input type="text" id="txNotes" class="form-input" placeholder="Ex: Compra mensal">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="transactionModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="saveTxBtn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Budget Config Modal -->
+  <div class="modal-overlay" id="budgetModal">
+    <div class="modal-container modal-small">
+      <div class="modal-header">
+        <h2 id="budgetModalTitle">Configurar Orçamento</h2>
+        <button class="modal-close-btn" data-close="budgetModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="budgetForm" class="modal-form">
+        <div class="form-group">
+          <label for="budgetCategory" class="form-label">Categoria</label>
+          <select id="budgetCategory" class="form-input" required>
+            <!-- Rendered from budgetable categories -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="budgetLimit" class="form-label">Limite Mensal</label>
+          <div class="input-currency-wrapper">
+            <span class="currency-symbol-input" id="budgetModalCurrencySymbol">Kz</span>
+            <input type="number" id="budgetLimit" class="form-input" min="0" step="1" placeholder="0.00" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="budgetModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Orçamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Goal Config Modal -->
+  <div class="modal-overlay" id="goalModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Criar Nova Meta</h2>
+        <button class="modal-close-btn" data-close="goalModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="goalForm" class="modal-form">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goalName" class="form-label">Nome da Meta</label>
+            <input type="text" id="goalName" class="form-input" placeholder="Ex: Fundo de Emergência, Férias" required>
+          </div>
+          <div class="form-group">
+            <label for="goalTarget" class="form-label">Valor Alvo</label>
+            <div class="input-currency-wrapper">
+              <span class="currency-symbol-input" id="goalModalCurrencySymbol">Kz</span>
+              <input type="number" id="goalTarget" class="form-input" min="1" step="1" placeholder="0.00" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="goalDeadline" class="form-label">Prazo Limite</label>
+            <input type="date" id="goalDeadline" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="goalIcon" class="form-label">Ícone / Emoji</label>
+            <select id="goalIcon" class="form-input">
+              <option value="car">🚗 Carro</option>
+              <option value="plane">✈️ Viagem</option>
+              <option value="home">🏠 Casa</option>
+              <option value="piggy-bank">🐷 Poupança</option>
+              <option value="graduation-cap">🎓 Estudos</option>
+              <option value="heart-pulse">❤️ Saúde</option>
+              <option value="gift">🎁 Presente</option>
+              <option value="laptop">💻 Tecnologia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="goalModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Savings Contribution Modal -->
+  <div class="modal-overlay" id="contributionModal">
+    <div class="modal-container modal-small">
+      <div class="modal-header">
+        <h2 id="contributionModalTitle">Reforçar Meta</h2>
+        <button class="modal-close-btn" data-close="contributionModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="contributionForm" class="modal-form">
+        <input type="hidden" id="contributionGoalId">
+        <input type="hidden" id="contributionType" value="deposit">
+        
+        <div class="form-group">
+          <label class="form-label" id="contributionGoalName">Meta: Fundo de Emergência</label>
+        </div>
+
+        <div class="form-group">
+          <label for="contributionAmount" class="form-label">Valor do Reforço</label>
+          <div class="input-currency-wrapper">
+            <span class="currency-symbol-input" id="contribModalCurrencySymbol">Kz</span>
+            <input type="number" id="contributionAmount" class="form-input" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <small class="form-helper" id="contribHelperText">Este valor será deduzido do seu saldo atual.</small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="contributionModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="contribSubmitBtn">Reforçar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Core Javascript Loader -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
